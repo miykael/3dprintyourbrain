@@ -1,18 +1,25 @@
-==========
-LINEViewer
-==========
+===================
+3D print your brain
+===================
 
-.. |logo| image:: lineviewer/static/favicon_256.ico
-   :width: 256pt
+So, you want to 3D print your own brain? The following is a step by step guide that will show you how you can 3D print a brain, all coming from a structural image (T1) like this:
 
-.. |introText| replace:: LINEViewer is a python based EEG analysis toolbox that helps you to get a first impression of your data. The softwares is very fast in analysing your data and can compute subject averages of hour long datasets within seconds. You have all the preprocessing options that you know from other EEG analysis softwares.
+.. image:: static/brain.png
 
-+-------------+--------+
-| |introText| | |logo| |
-+-------------+--------+
+.. note::
+    To create a 3D surface model of your brain we will use FreeSurfer and meshlab. Therefore you should make sure that those two softwares are already installed on your system.
 
 
-Installation
--------------
+1. Specify Variables
+--------------------
 
-LINEViewer is distributed via https://github.com/miykael/LINEViewer/. You can download the newest version under `releases <https://github.com/miykael/LINEViewer/releases>`_.
+Let's first specify all necessary variables that we need for this to work:
+
+.. code-block:: bash
+
+    export EXPERIMENT_DIR=/users/mnotter/tmp
+    export SUBJECTS_DIR=$EXPERIMENT_DIR/freesurfer
+    export subjectName=sub001
+
+
+
