@@ -36,7 +36,7 @@ mri_convert ${subjT1} $SUBJECTS_DIR/${subject}/mri/orig/001.mgz
 recon-all -subjid ${subject} -all -time -log logfile -nuintensitycor-3T
 ```
 
-**Note:** This step might take some time. Between 6-18h. If you want to run ``recon-all`` in parallel and speed-up the whole process, add `` -openmp N`` to the end of the ``recon-all`` command, where **N** stands for the number of CPUs to use.
+**Note:** This step might take some time. Between 6-18h. If you want to run ``recon-all`` in parallel and speed-up the whole process, add `` -openmp N`` to the end of the ``recon-all`` command, where ``N`` stands for the number of CPUs to use.
 
 
 ## 3. Create 3D Model of Cortical Areas
@@ -44,7 +44,8 @@ recon-all -subjid ${subject} -all -time -log logfile -nuintensitycor-3T
 The following code will take the reconstructed surface model of both hemisphere's, concatenate them and save them under ``cortical.stl``
 
 ```bash
-mris_convert --combinesurfs $SUBJECTS_DIR/${subject}/surf/lh.pial $SUBJECTS_DIR/${subject}/surf/rh.pial $SUBJECTS_DIR/cortical.stl
+mris_convert --combinesurfs $SUBJECTS_DIR/${subject}/surf/lh.pial $SUBJECTS_DIR/${subject}/surf/rh.pial \
+             $SUBJECTS_DIR/cortical.stl
 ```
 
 Now let's look at the data with ``meshlab``. Therefore use the following code:
@@ -61,7 +62,7 @@ You should see something like this:
 
 <img src="static/message_duplicates.png">
 
-This version of your surface reconstruction is still rather rough. Therefore we will smooth it next. Therefore, go to
+This version of your surface reconstruction is still rather rough. So lets smooth it abit. Therefore, go to
 
 ```
 Filters
@@ -81,7 +82,7 @@ After this step, click on ``File`` and ``Export Mesh`` and save the whole thing 
 
 <img src="static/message_export.png">
 
-Press ``OK`` and close ``meshlab`` agin.
+Press ``OK`` and close ``meshlab`` again.
 
 
 ## 4. Extract the Subcortial Areas of Interest
@@ -161,11 +162,8 @@ Now it's a short thing to concatenate the two files, ``cortical.stl`` and ``subc
 
 ```bash
 echo 'solid '$EXPERIMENT_DIR'/final.stl' > $EXPERIMENT_DIR/final.stl
-
-sed '/solid \/home\/egeiser\/Dropbox\/private\/MRI\/tmp\/subcortical.stl/d' subcortical.stl >> final.stl
-
-sed '/solid '$EXPERIMENT_DIR'/cortical.stl/d' cortical.stl >> $EXPERIMENT_DIR/final.stl
-sed '/solid '$EXPERIMENT_DIR'\/subcortical.stl/d' $EXPERIMENT_DIR/subcortical.stl >> $EXPERIMENT_DIR/final.stl
+sed '/solid vcg/d' $EXPERIMENT_DIR/cortical.stl >> $EXPERIMENT_DIR/final.stl
+sed '/solid vcg/d' $EXPERIMENT_DIR/subcortical.stl >> $EXPERIMENT_DIR/final.stl
 echo 'endsolid '$EXPERIMENT_DIR'/final.stl' >> $EXPERIMENT_DIR/final.stl
 ```
 
@@ -181,12 +179,21 @@ rm $EXPERIMENT_DIR/bin.nii \
    $EXPERIMENT_DIR/subcortical
 ```
 
-## 7. Final Result
+## 9. Reduce File Size
+
+Use again ``meshlab`` to load ``final.stl``.
 
 ```bash
 meshlab final.stl
 ```
 
-## 8. Print 3D Model Per Internet
+<img src="static/final.png">
 
-To print evtl. use - https://www.shapeways.com/model/upload-and-buy
+Now, as a final step: Export the mesh again, but this time use ``Binary encoding``. This will reduce the data volume dramatically and will make it easier to send or upload the 3D model.
+
+
+## 10. Print 3D Model via Internet
+
+So, now to the final steps. If you're lucky enough and you have you have your own access to a 3D printer, than you probably no what to do next. Lucky you!
+
+If you don't have access to a 3D printer, than there are many options on the internet. I personally used `www.shapeways.com <www.shapeways.com>`_. It's very easy to use, you can choose from many different materials and it gives you also the option to resize your model, as well as correct for falwed surface areas.
