@@ -39,70 +39,146 @@ recon-all -subjid ${subject} -all -time -log logfile -nuintensitycor-3T
 **Note:** This step might take some time. Between 6-18h. If you want to run ``recon-all`` in parallel and speed-up the whole process, add `` -openmp N`` to the end of the ``recon-all`` command, where **N** stands for the number of CPUs to use.
 
 
-## 3. Create 3D Model of cortical Areas
+## 3. Create 3D Model of Cortical Areas
+
+The following code will take the reconstructed surface model of both hemisphere's, concatenate them and save them under ``cortical.stl``
 
 ```bash
-mris_convert --combinesurfs sub*/surf/lh.pial sub*/surf/rh.pial ./cortex.stl
-meshlab cortex.stl
-
-# Use MeshLab Filters to optimize surface quality
-#   Filters > Smoothing, Fairing, and Deformation > ScaleDependent Laplacian Smooth > 100 iteration + 0.1 perc on
-
-# File > Export Mesh - under cortex.stl, but not as binary!
-
-#close meshlab
+mris_convert --combinesurfs $SUBJECTS_DIR/${subject}/surf/lh.pial $SUBJECTS_DIR/${subject}/surf/rh.pial $SUBJECTS_DIR/cortical.stl
 ```
+
+Now let's look at the data with ``meshlab``. Therefore use the following code:
+
+```bash
+meshlab $SUBJECTS_DIR/cortical.stl
+```
+
+You should see something like this:
+
+<img src="static/cortical_rough.png">
+
+**Note:** If you have the following display message, just accept with **OK**.
 
 <img src="static/message_duplicates.png">
-<img src="static/message_export.png">
-<img src="static/cortical_rough.png">
+
+This version of your surface reconstruction is still rather rough. Therefore we will smooth it next. Therefore, go to
+
+```
+Filters
+    > Smoothing, Fairing, and Deformation
+        > ScaleDependent Laplacian Smooth
+```
+
+This should open up the following window:
+
 <img src="static/laplacian_smooth.png">
+
+Just set ``Smoothing steps`` to ``100`` and ``perc on`` under ``delta (abs and %)`` to ``0.100``. And finally press ``Apply``. You should now have something that looks like this:
+
 <img src="static/cortical_smooth.png">
-<img src="static/subcortical.png">
+
+After this step, click on ``File`` and ``Export Mesh`` and save the whole thing without ``Binary encoding``, i.e.:
+
+<img src="static/message_export.png">
+
+Press ``OK`` and close ``meshlab`` agin.
 
 
-## 4. Create 3D Model of subcortial Areas
+## 4. Extract the Subcortial Areas of Interest
+
+Now, FreeSurfer creates a very nice 3D model of the surface. Which unfortunately it doesn't do for subcortical structures, cerebellum and brainstem. Assuming that you want to print those areas too, we have to create a 3D surface model of them first. One way to do this is to use FreeSurfer's segmentation file ``aseg.mgz``.
 
 ```bash
-mri_convert sub*/mri/aseg.mgz subcortical.nii
-mri_binarize --i subcortical.nii --match 2 3 24 31 41 42 63 72 77 51 52 13 12 43 50 4 11 26 58 49 10 17 18 53 54 44 5 80 14 15 30 62 --inv --o bin.nii
-fslmaths subcortical.nii -mul bin.nii subcortical.nii.gz
+# First, convert aseg.mgz into NIfTI format
+mri_convert $SUBJECTS_DIR/${subject}/mri/aseg.mgz $EXPERIMENT_DIR/subcortical.nii
 
-# Pre-tessellate
-cp subcortical.nii.gz subcortical_filled.nii.gz
-gunzip -f subcortical_filled.nii.gz
+# Second, binarize all Areas that you're not interested and inverse the binarization
+mri_binarize --i $EXPERIMENT_DIR/subcortical.nii \
+             --match 2 3 24 31 41 42 63 72 77 51 52 13 12 43 50 4 11 26 58 49 10 17 18 53 54 44 5 80 14 15 30 62 \
+             --inv \
+             --o $EXPERIMENT_DIR/bin.nii
 
+# Third, multiply the original aseg.mgz file with the binarized files
+fslmaths $EXPERIMENT_DIR/subcortical.nii \
+         -mul $EXPERIMENT_DIR/bin.nii \
+         $EXPERIMENT_DIR/subcortical.nii.gz
+```
+
+**Note:** To figure out the value of the areas of no interest in the second step open ``aseg.mgz`` in the NIfTI viewer of your choice. With FreeSurfer it would be as follows: ``freeview -v $SUBJECTS_DIR/${subject}/mri/aseg.mgz -colormap lut``
+
+After this step you'll have a NIfTI file that only contains the areas you were interested in. It should look something like this:
+
+<img src="static/subcortical_aseg.png"  width="400">
+
+## 5. Create 3D Model of Subcortical Areas
+
+The next step is now to turn those subcortical regions into a 3D model.
+
+```bash
+# Copy original file to create a temporary file
+cp $EXPERIMENT_DIR/subcortical.nii.gz $EXPERIMENT_DIR/subcortical_tmp.nii.gz
+
+# Unzip this file
+gunzip -f $EXPERIMENT_DIR/subcortical_tmp.nii.gz
+
+# Check all areas of interest for wholes and fill them out if necessary
 for i in 7 8 16 28 46 47 60 251 252 253 254 255
 do
-    mri_pretess subcortical_filled.nii $i sub*/mri/norm.mgz subcortical_filled.nii
+    mri_pretess $EXPERIMENT_DIR/subcortical_tmp.nii \
+    $i \
+    $SUBJECTS_DIR/${subject}/mri/norm.mgz \
+    $EXPERIMENT_DIR/subcortical_tmp.nii
 done
 
-# Tessellate
-fslmaths subcortical_filled.nii -bin subcortical_bin.nii
-#freeview -v subcortical_bin.nii.gz # Manually clean unconnected voxels
-mri_tessellate subcortical_bin.nii.gz 1 subcortical
-mris_convert subcortical ./subcortical.stl
+# Binarize the whole volume
+fslmaths $EXPERIMENT_DIR/subcortical_tmp.nii -bin $EXPERIMENT_DIR/subcortical_bin.nii
 
+# Create a surface model of the binarized volume with mri_tessellate
+mri_tessellate $EXPERIMENT_DIR/subcortical_bin.nii.gz 1 $EXPERIMENT_DIR/subcortical
+
+# Convert binary surface output into stl format
+mris_convert $EXPERIMENT_DIR/subcortical $EXPERIMENT_DIR/subcortical.stl
+```
+
+Next, open ``subcortical.stl`` with ``meshlab`` and apply ``ScaleDependent Laplacian Smooth`` as under step 3.
+
+```bash
 meshlab subcortical.stl
-
-#   Filters > Smoothing, Fairing,...> ScaleDependent Laplacian Smooth > 100 iteration + 0.1 perc on
-
-# Export mesh under cortex.stl, but not as binary!
 ```
 
-## 5. Combine Cortical and Subcortial 3D Models
+The output you get should be as follows:
+
+<img src="static/subcortical.png">
+
+On the left you see the surface reconstruction before smoothing, just after the tesselation and on the right you see the smoothed subcortical surface model after scale dependent laplacian smoothing.
+
+Now, as before: Click on ``File`` and ``Export Mesh`` and save the whole thing without ``Binary encoding``.
+
+
+## 7. Combine Cortical and Subcortial 3D Models
+
+Now it's a short thing to concatenate the two files, ``cortical.stl`` and ``subcortical.stl`` into one ``final.stl`` file:
 
 ```bash
-echo 'solid ./final.stl' > final.stl
-sed '/solid .\/cortex.stl/d' cortex.stl >> final.stl
-sed '/solid .\/subcortical.stl/d' subcortical.stl >> final.stl
-echo 'endsolid ./final.stl' >> final.stl
+echo 'solid '$EXPERIMENT_DIR'/final.stl' > $EXPERIMENT_DIR/final.stl
+
+sed '/solid \/home\/egeiser\/Dropbox\/private\/MRI\/tmp\/subcortical.stl/d' subcortical.stl >> final.stl
+
+sed '/solid '$EXPERIMENT_DIR'/cortical.stl/d' cortical.stl >> $EXPERIMENT_DIR/final.stl
+sed '/solid '$EXPERIMENT_DIR'\/subcortical.stl/d' $EXPERIMENT_DIR/subcortical.stl >> $EXPERIMENT_DIR/final.stl
+echo 'endsolid '$EXPERIMENT_DIR'/final.stl' >> $EXPERIMENT_DIR/final.stl
 ```
 
-## 6. Clean-up Temporary Output
+
+## 8. Clean-up Temporary Output
 
 ```bash
-rm bin.nii subcortical_bin.nii.gz subcortical_filled.nii subcortical.nii subcortical.nii.gz subcortical
+rm $EXPERIMENT_DIR/bin.nii \
+   $EXPERIMENT_DIR/subcortical_bin.nii.gz \
+   $EXPERIMENT_DIR/subcortical_tmp.nii \
+   $EXPERIMENT_DIR/subcortical.nii \
+   $EXPERIMENT_DIR/subcortical.nii.gz \
+   $EXPERIMENT_DIR/subcortical
 ```
 
 ## 7. Final Result
