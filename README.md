@@ -206,3 +206,8 @@ If you don't have access to a 3D printer, than there are many options on the int
 And this is how the final product might look like:
 
 <img src="static/3dbrain.png" width="400">
+
+
+# 3D print alternative
+
+I'm happy to point you to a [nice alternative to this guide](https://medium.com/@cMadan/we-can-3d-print-brains-novelty-paperweight-or-a-tool-for-scientific-communication-bd7af9b7609a), written by [Christopher Madan](https://github.com/cmadan). Make sure to also check out [his article](http://riojournal.com/articles.php?journal_name=rio&id=10266)!
