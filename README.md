@@ -35,7 +35,7 @@ Assuming that you have your structural image in NIfTI format, run the following 
 ```bash
 mkdir -p $SUBJECTS_DIR/${subject}/mri/orig
 mri_convert ${subjT1} $SUBJECTS_DIR/${subject}/mri/orig/001.mgz
-recon-all -subjid ${subject} -all -time -log logfile -nuintensitycor-3T
+recon-all -subjid ${subject} -all -time -log logfile -nuintensitycor-3T -sd $SUBJECTS_DIR
 ```
 
 **Note:** This step might take some time. Between 6-18h. If you want to run ``recon-all`` in parallel and speed-up the whole process, add `` -openmp N`` to the end of the ``recon-all`` command, where ``N`` stands for the number of CPUs to use.
