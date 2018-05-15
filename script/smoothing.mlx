@@ -1,0 +1,11 @@
+<!DOCTYPE FilterScript>
+<FilterScript>
+ <filter name="Merge Close Vertices">
+  <Param max="2.40433" value="0.0" name="Threshold" tooltip="All the vertices that closer than this threshold are merged together. Use very small values, default values is 1/10000 of bounding box diagonal. " type="RichAbsPerc" min="0" description="Merging distance"/>
+ </filter>
+ <filter name="ScaleDependent Laplacian Smooth">
+  <Param type="RichInt" value="100" name="stepSmoothNum"/>
+  <Param type="RichAbsPerc" value="0.100" min="0" name="delta" max="24.0433"/>
+  <Param type="RichBool" value="false" name="Selected"/>
+ </filter>
+</FilterScript>
