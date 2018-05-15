@@ -1,15 +1,15 @@
 # 3D print your brain
 
-So, you want to 3D print your own brain? The following is a step by step guide that will tell you how to 3D print a brain. All coming from a structural image (T1) like this:
+So, you want to 3D print your own brain? The following is a step by step guide that will tell you exactly how to do that. You can either run the steps by yourself or use the amazing `3Dprinting_brain.sh` script, developed by [Sofie Van Den Bossche](https://github.com/sofievdbos) that is located in the `script` folder.
+
+In short, the script will allow you to create a 3D model of your brain, all coming from a structural image (T1) like this:
 
 <img src="static/brain.png" width="400">
 
 **Note:** To create a 3D surface model of your brain we will use [FreeSurfer](http://freesurfer.net/) and [meshlab](http://meshlab.sourceforge.net/). Therefore you should make sure that those two softwares are already installed on your system.
 
 
-
-
-## 1. Specify Variables
+## Step 1 - Specify Variables
 
 Let's first specify all necessary variables that we need for this to work:
 
@@ -28,7 +28,7 @@ export subjT1=$EXPERIMENT_DIR/${subject}/struct.nii.gz
 ```
 
 
-## 2. Create Surface Model with FreeSurfer
+## Step 2 - Create Surface Model with FreeSurfer
 
 Assuming that you have your structural image in NIfTI format, run the following code:
 
@@ -41,7 +41,7 @@ recon-all -subjid ${subject} -all -time -log logfile -nuintensitycor-3T -sd $SUB
 **Note:** This step might take some time. Between 6-18h. If you want to run ``recon-all`` in parallel and speed-up the whole process, add `` -openmp N`` to the end of the ``recon-all`` command, where ``N`` stands for the number of CPUs to use.
 
 
-## 3. Create 3D Model of Cortical Areas
+## Step 3 - Create 3D Model of Cortical Areas
 
 The following code will take the reconstructed surface model of both hemisphere's, concatenate them and save them under ``cortical.stl``
 
@@ -87,7 +87,7 @@ After this step, click on ``File`` and ``Export Mesh`` and save the whole thing 
 Press ``OK`` and close ``meshlab`` again.
 
 
-## 4. Extract the Subcortial Areas of Interest
+## Step 4 - Extract the Subcortial Areas of Interest
 
 Now, FreeSurfer creates a very nice 3D model of the surface. Which unfortunately it doesn't do for subcortical structures, cerebellum and brainstem. Assuming that you want to print those areas too, we have to create a 3D surface model of them first. One way to do this is to use FreeSurfer's segmentation file ``aseg.mgz``.
 
@@ -113,7 +113,7 @@ After this step you'll have a NIfTI file that only contains the areas you were i
 
 <img src="static/subcortical_aseg.png"  width="400">
 
-## 5. Create 3D Model of Subcortical Areas
+## Step 5 - Create 3D Model of Subcortical Areas
 
 The next step is now to turn those subcortical regions into a 3D model.
 
@@ -158,7 +158,7 @@ On the left you see the surface reconstruction before smoothing, just after the 
 Now, as before: Click on ``File`` and ``Export Mesh`` and save the whole thing without ``Binary encoding``.
 
 
-## 7. Combine Cortical and Subcortial 3D Models
+## Step 7 - Combine Cortical and Subcortial 3D Models
 
 Now it's a short thing to concatenate the two files, ``cortical.stl`` and ``subcortical.stl`` into one ``final.stl`` file:
 
@@ -170,7 +170,7 @@ echo 'endsolid '$EXPERIMENT_DIR'/final.stl' >> $EXPERIMENT_DIR/final.stl
 ```
 
 
-## 8. Clean-up Temporary Output
+## Step 8 - Clean-up Temporary Output
 
 ```bash
 rm $EXPERIMENT_DIR/bin.nii \
@@ -181,7 +181,7 @@ rm $EXPERIMENT_DIR/bin.nii \
    $EXPERIMENT_DIR/subcortical
 ```
 
-## 9. Reduce File Size
+## Step 9 - Reduce File Size
 
 Use again ``meshlab`` to load ``final.stl``.
 
@@ -194,14 +194,14 @@ meshlab final.stl
 Now, as a final step: Export the mesh again, but this time use ``Binary encoding``. This will reduce the data volume dramatically and will make it easier to send or upload the 3D model.
 
 
-## 10. Print 3D Model via Internet
+## Step 10 - Print 3D Model via Internet
 
 So, now to the final steps. If you're lucky enough and you have you have your own access to a 3D printer, than you probably no what to do next. Lucky you!
 
 If you don't have access to a 3D printer, than there are many options on the internet. I personally used [www.shapeways.com](https://www.shapeways.com). It's very easy to use, you can choose from many different materials and it gives you also the option to resize your model, as well as correct for flawed surface areas.
 
 
-## 11. The Final product
+## Step 11 - The Final product
 
 And this is how the final product might look like:
 
