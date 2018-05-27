@@ -196,7 +196,7 @@ Now, as a final step: Export the mesh again, but this time use ``Binary encoding
 
 ## Step 10 - Print 3D Model via Internet
 
-So, now to the final steps. If you're lucky enough and you have you have your own access to a 3D printer, than you probably no what to do next. Lucky you!
+So, now to the final steps. If you're lucky enough and you have you have your own access to a 3D printer, than you probably know what to do next. Lucky you!
 
 If you don't have access to a 3D printer, than there are many options on the internet. I personally used [www.shapeways.com](https://www.shapeways.com). It's very easy to use, you can choose from many different materials and it gives you also the option to resize your model, as well as correct for flawed surface areas.
 
