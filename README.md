@@ -1,5 +1,14 @@
 # 3D print your brain
 
+[![CircleCi](https://img.shields.io/circleci/project/miykael/3dprintyourbrain/master.svg?maxAge=2592000)](https://circleci.com/gh/miykael/3dprintyourbrain/tree/master)
+[![GitHub issues](https://img.shields.io/github/issues/miykael/3dprintyourbrain.svg)](https://github.com/miykael/3dprintyourbrain/issues/)
+[![GitHub pull-requests](https://img.shields.io/github/issues-pr/miykael/3dprintyourbrain.svg)](https://github.com/miykael/3dprintyourbrain/pulls/)
+[![GitHub contributors](https://img.shields.io/github/contributors/miykael/3dprintyourbrain.svg)](https://GitHub.com/miykael/3dprintyourbrain/graphs/contributors/)
+[![GitHub Commits](https://github-basic-badges.herokuapp.com/commits/miykael/3dprintyourbrain.svg)](https://github.com/miykael/3dprintyourbrain/commits/master)
+[![GitHub size](https://github-size-badge.herokuapp.com/miykael/3dprintyourbrain.svg)](https://github.com/miykael/3dprintyourbrain/archive/master.zip)
+[![Docker Hub](https://img.shields.io/docker/pulls/miykael/3dprintyourbrain.svg?maxAge=2592000)](https://hub.docker.com/r/miykael/3dprintyourbrain/)
+[![GitHub HitCount](http://hits.dwyl.io/miykael/3dprintyourbrain.svg)](http://hits.dwyl.io/miykael/3dprintyourbrain)
+
 So, you want to 3D print your own brain? The following is a step by step guide that will tell you exactly how to do that. You can either run the steps by yourself or use the amazing `3Dprinting_brain.sh` script, developed by [Sofie Van Den Bossche](https://github.com/sofievdbos), James Deraeve, Thibault Sanders and [Robby De Pauw](https://twitter.com/RobbyDePauw) that is located in the `script` folder.
 
 In short, the script will allow you to create a 3D model of your brain, all coming from a structural image (T1) like this:
