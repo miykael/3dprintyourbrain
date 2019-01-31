@@ -60,7 +60,7 @@ export MESHLAB_DIR=$3
 
 mkdir -p $SUBJECTS_DIR/mri/orig
 mri_convert ${subjT1} $SUBJECTS_DIR/mri/orig/001.mgz
-recon-all -subjid "output" -all -time -log logfile -nuintensitycor-3T -sd "$MAIN_DIR/${subject}/"
+recon-all -subjid "output" -all -time -log logfile -nuintensitycor-3T -sd "$MAIN_DIR/${subject}/" -parallel
 
 #==========================================================================================
 #3. Create 3D Model of Cortical and Subcortical Areas
