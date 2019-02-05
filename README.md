@@ -100,18 +100,18 @@ Now, FreeSurfer creates a very nice 3D model of the surface. Which unfortunately
 
 ```bash
 # First, convert aseg.mgz into NIfTI format
-mri_convert $SUBJECTS_DIR/${subject}/mri/aseg.mgz $EXPERIMENT_DIR/subcortical.nii
+mri_convert $SUBJECTS_DIR/${subject}/mri/aseg.mgz $SUBJECTS_DIR/subcortical.nii
 
 # Second, binarize all Areas that you're not interested and inverse the binarization
-mri_binarize --i $EXPERIMENT_DIR/subcortical.nii \
+mri_binarize --i $SUBJECTS_DIR/subcortical.nii \
              --match 2 3 24 31 41 42 63 72 77 51 52 13 12 43 50 4 11 26 58 49 10 17 18 53 54 44 5 80 14 15 30 62 \
              --inv \
-             --o $EXPERIMENT_DIR/bin.nii
+             --o $SUBJECTS_DIR/bin.nii
 
 # Third, multiply the original aseg.mgz file with the binarized files
-fslmaths $EXPERIMENT_DIR/subcortical.nii \
-         -mul $EXPERIMENT_DIR/bin.nii \
-         $EXPERIMENT_DIR/subcortical.nii.gz
+fslmaths $SUBJECTS_DIR/subcortical.nii \
+         -mul $SUBJECTS_DIR/bin.nii \
+         $SUBJECTS_DIR/subcortical.nii.gz
 ```
 
 **Note:** To figure out the value of the areas of no interest in the second step open ``aseg.mgz`` in the NIfTI viewer of your choice. With FreeSurfer it would be as follows: ``freeview -v $SUBJECTS_DIR/${subject}/mri/aseg.mgz -colormap lut``
@@ -126,34 +126,34 @@ The next step is now to turn those subcortical regions into a 3D model.
 
 ```bash
 # Copy original file to create a temporary file
-cp $EXPERIMENT_DIR/subcortical.nii.gz $EXPERIMENT_DIR/subcortical_tmp.nii.gz
+cp $SUBJECTS_DIR/subcortical.nii.gz $SUBJECTS_DIR/subcortical_tmp.nii.gz
 
 # Unzip this file
-gunzip -f $EXPERIMENT_DIR/subcortical_tmp.nii.gz
+gunzip -f $SUBJECTS_DIR/subcortical_tmp.nii.gz
 
 # Check all areas of interest for wholes and fill them out if necessary
 for i in 7 8 16 28 46 47 60 251 252 253 254 255
 do
-    mri_pretess $EXPERIMENT_DIR/subcortical_tmp.nii \
+    mri_pretess $SUBJECTS_DIR/subcortical_tmp.nii \
     $i \
     $SUBJECTS_DIR/${subject}/mri/norm.mgz \
-    $EXPERIMENT_DIR/subcortical_tmp.nii
+    $SUBJECTS_DIR/subcortical_tmp.nii
 done
 
 # Binarize the whole volume
-fslmaths $EXPERIMENT_DIR/subcortical_tmp.nii -bin $EXPERIMENT_DIR/subcortical_bin.nii
+fslmaths $SUBJECTS_DIR/subcortical_tmp.nii -bin $SUBJECTS_DIR/subcortical_bin.nii
 
 # Create a surface model of the binarized volume with mri_tessellate
-mri_tessellate $EXPERIMENT_DIR/subcortical_bin.nii.gz 1 $EXPERIMENT_DIR/subcortical
+mri_tessellate $SUBJECTS_DIR/subcortical_bin.nii.gz 1 $SUBJECTS_DIR/subcortical
 
 # Convert binary surface output into stl format
-mris_convert $EXPERIMENT_DIR/subcortical $EXPERIMENT_DIR/subcortical.stl
+mris_convert $SUBJECTS_DIR/subcortical $SUBJECTS_DIR/subcortical.stl
 ```
 
 Next, open ``subcortical.stl`` with ``meshlab`` and apply ``ScaleDependent Laplacian Smooth`` as under step 3.
 
 ```bash
-meshlab subcortical.stl
+meshlab $SUBJECTS_DIR/subcortical.stl
 ```
 
 The output you get should be as follows:
@@ -170,22 +170,22 @@ Now, as before: Click on ``File`` and ``Export Mesh`` and save the whole thing w
 Now it's a short thing to concatenate the two files, ``cortical.stl`` and ``subcortical.stl`` into one ``final.stl`` file:
 
 ```bash
-echo 'solid '$EXPERIMENT_DIR'/final.stl' > $EXPERIMENT_DIR/final.stl
-sed '/solid vcg/d' $EXPERIMENT_DIR/cortical.stl >> $EXPERIMENT_DIR/final.stl
-sed '/solid vcg/d' $EXPERIMENT_DIR/subcortical.stl >> $EXPERIMENT_DIR/final.stl
-echo 'endsolid '$EXPERIMENT_DIR'/final.stl' >> $EXPERIMENT_DIR/final.stl
+echo 'solid '$SUBJECTS_DIR'/final.stl' > $SUBJECTS_DIR/final.stl
+sed '/solid vcg/d' $SUBJECTS_DIR/cortical.stl >> $SUBJECTS_DIR/final.stl
+sed '/solid vcg/d' $SUBJECTS_DIR/subcortical.stl >> $SUBJECTS_DIR/final.stl
+echo 'endsolid '$SUBJECTS_DIR'/final.stl' >> $SUBJECTS_DIR/final.stl
 ```
 
 
 ## Step 8 - Clean-up Temporary Output
 
 ```bash
-rm $EXPERIMENT_DIR/bin.nii \
-   $EXPERIMENT_DIR/subcortical_bin.nii.gz \
-   $EXPERIMENT_DIR/subcortical_tmp.nii \
-   $EXPERIMENT_DIR/subcortical.nii \
-   $EXPERIMENT_DIR/subcortical.nii.gz \
-   $EXPERIMENT_DIR/subcortical
+rm $SUBJECTS_DIR/bin.nii \
+   $SUBJECTS_DIR/subcortical_bin.nii.gz \
+   $SUBJECTS_DIR/subcortical_tmp.nii \
+   $SUBJECTS_DIR/subcortical.nii \
+   $SUBJECTS_DIR/subcortical.nii.gz \
+   $SUBJECTS_DIR/subcortical
 ```
 
 ## Step 9 - Reduce File Size
@@ -193,7 +193,7 @@ rm $EXPERIMENT_DIR/bin.nii \
 Use again ``meshlab`` to load ``final.stl``.
 
 ```bash
-meshlab final.stl
+meshlab $SUBJECTS_DIR/final.stl
 ```
 
 <img src="static/final.png">
