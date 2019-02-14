@@ -13,8 +13,7 @@ In short, the script will allow you to create a 3D model of your brain, all comi
 
 <img src="static/brain.png" width="400">
 
-**Note:** To create a 3D surface model of your brain we will use [FreeSurfer](http://freesurfer.net/) and [meshlab](http://meshlab.sourceforge.net/). Therefore you should make sure that those two softwares are already installed on your system.
-
+**Note:** To create a 3D surface model of your brain we will use [FreeSurfer](http://freesurfer.net/), [meshlab](http://meshlab.sourceforge.net/) and [FSL](https://fsl.fmrib.ox.ac.uk/fsl/fslwiki). Therefore you should make sure that those are already installed on your system.
 
 ## Step 1 - Specify Variables
 
