@@ -5,7 +5,6 @@
 [![GitHub contributors](https://img.shields.io/github/contributors/miykael/3dprintyourbrain.svg)](https://GitHub.com/miykael/3dprintyourbrain/graphs/contributors/)
 [![GitHub Commits](https://github-basic-badges.herokuapp.com/commits/miykael/3dprintyourbrain.svg)](https://github.com/miykael/3dprintyourbrain/commits/master)
 [![GitHub size](https://github-size-badge.herokuapp.com/miykael/3dprintyourbrain.svg)](https://github.com/miykael/3dprintyourbrain/archive/master.zip)
-[![GitHub HitCount](http://hits.dwyl.io/miykael/3dprintyourbrain.svg)](http://hits.dwyl.io/miykael/3dprintyourbrain)
 
 So, you want to 3D print your own brain? The following is a step by step guide that will tell you exactly how to do that. You can either run the steps by yourself or use the amazing `3Dprinting_brain.sh` script, developed by [Sofie Van Den Bossche](https://github.com/sofievdbos), James Deraeve, Thibault Sanders and [Robby De Pauw](https://twitter.com/RobbyDePauw) that is located in the `script` folder.
 
