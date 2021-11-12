@@ -61,6 +61,8 @@ Now let's look at the data with ``meshlab``. Therefore use the following code:
 meshlab $SUBJECTS_DIR/cortical.stl
 ```
 
+**Note:** Should you run into issues with the `meshlab` commands, check out [this useful comment](https://github.com/miykael/3dprintyourbrain/issues/15) from [smeisler](https://github.com/smeisler).
+
 You should see something like this:
 
 <img src="static/cortical_rough.png">
