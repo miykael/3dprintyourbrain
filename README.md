@@ -215,6 +215,8 @@ And this is how the final product might look like:
 <img src="static/3dbrain.png" width="400">
 
 
-# 3D print alternative
+# 3D print alternative, and more
 
 I'm happy to point you to a [nice alternative to this guide](https://medium.com/@cMadan/we-can-3d-print-brains-novelty-paperweight-or-a-tool-for-scientific-communication-bd7af9b7609a), written by [Christopher Madan](https://github.com/cmadan). Make sure to also check out [his article](http://riojournal.com/articles.php?journal_name=rio&id=10266)!
+
+And for people who are using **WSL (windows subsystem for linux)**, check out [Simon Kern](https://github.com/skjerns)'s awesome fork of this repo [here](https://github.com/skjerns/3dprintyourbrain).
